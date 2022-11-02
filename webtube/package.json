@@ -1,0 +1,28 @@
+{
+  "name": "webtube",
+  "version": "1.0.0",
+  "description": "The best way to watch videos.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --exec babel-node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sone1118/backend_study.git"
+  },
+  "author": "Jenos",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sone1118/backend_study/issues"
+  },
+  "homepage": "https://github.com/sone1118/backend_study#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.19.6",
+    "@babel/node": "^7.20.0",
+    "@babel/preset-env": "^7.19.4",
+    "nodemon": "^2.0.20"
+  }
+}
