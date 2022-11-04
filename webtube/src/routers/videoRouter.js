@@ -1,5 +1,5 @@
 import express from "express";
-import { edit, see, deleteVideo, upload } from "../controllers/videoController"
+import { edit, watch, deleteVideo, upload } from "../controllers/videoController"
 
 const videoRouter = express.Router();
 
@@ -7,9 +7,9 @@ const videoRouter = express.Router();
 //그래서 /upload를 먼저 써줘야 하는데 그렇게 하면 불편하니까
 // videoRouter.get("/:id(\\d+)", see);
 // 정규 표현식이 들어와서 걸러줄 수도 있다.
-videoRouter.get("/:id(\\d+)", see);
+videoRouter.get("/:id(\\d+)", watch);
 videoRouter.get("/upload", upload);
-videoRouter.get("/:id/edit", edit);
-videoRouter.get("/:id/delete", deleteVideo);
+videoRouter.get("/:id(\\d+)/edit", edit);
+videoRouter.get("/:id(\\d+)/delete", deleteVideo);
 
 export default videoRouter;
