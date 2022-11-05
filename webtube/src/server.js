@@ -19,7 +19,9 @@ const logger = morgan("dev");
 app.set("view engine", "pug")
 app.set("views", process.cwd() + "/src/views");
 app.use(logger);
-
+//미들웨어녀석 form에서 전송되는 것을 받아준다
+//여러 모드가 있는데 extended: true 이것은 object 형태로 줌
+app.use(express.urlencoded({ extended: true}));
 app.use("/", globalRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);

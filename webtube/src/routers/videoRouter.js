@@ -1,5 +1,5 @@
 import express from "express";
-import { edit, watch, deleteVideo, upload } from "../controllers/videoController"
+import { getUpload, postUpload, getEdit, postEdit, watch } from "../controllers/videoController"
 
 const videoRouter = express.Router();
 
@@ -8,8 +8,7 @@ const videoRouter = express.Router();
 // videoRouter.get("/:id(\\d+)", see);
 // 정규 표현식이 들어와서 걸러줄 수도 있다.
 videoRouter.get("/:id(\\d+)", watch);
-videoRouter.get("/upload", upload);
-videoRouter.get("/:id(\\d+)/edit", edit);
-videoRouter.get("/:id(\\d+)/delete", deleteVideo);
+videoRouter.route("/:id(\\d+)/edit").get(getEdit).post(postEdit);
+videoRouter.route("/upload").get(getUpload).post(postUpload);
 
 export default videoRouter;
