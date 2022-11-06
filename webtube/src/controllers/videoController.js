@@ -79,3 +79,37 @@ export const postUpload = async (req, res) => {
             errorMessage: error._message});
     }
 }
+
+export const getDelete = async (req, res) => {
+    //FindOneAndUpdate 같은 One이 들어가는 애들은 where 너낌이다 _id: id  이걸 찾는것
+    //FindIdAndUpdate -> FindOneAndUpdate({id_: id}, {}) 이거와 똑같은 거임.
+    const { id } = req.params;
+    try {
+        await Video.findByIdAndDelete(id);
+    }catch(error){
+        console.log(error);
+        return res.redirect("/");
+    }
+    return res.redirect("/");
+};
+
+export const search = async (req, res) => {
+    //get으로 오는 ?keyword=~~~ 는 req.query에 들어 있다
+    const { keyword } = req.query;
+    let videos = [];
+    if(keyword) {
+        //search
+        //find의 옵션에는 여러 가지가 있다 (mongodb가 제공하는 것)
+        //$gt: 3 -> 3보다 큰것
+        //$regex: new RegExp("정규표현식", "i"); => 정규표현식 && 대소문자 구별 안함
+        //ex) `^${keyword}` : keyword가 맨앞에 있는거 `${keyword}$` keyword가 맨 뒤에 있는거
+        //new RegExp("찾을문장", "i"); => 찾을 문장을 포함한 모들걸 찾음
+        //등으로 찾아 줄수 있다.
+        videos = await Video.find({
+           title: {
+            $regex: new RegExp(keyword, "i")
+        },
+        });
+    }
+    return res.render("search", {pageTitle: "Search Video", videos});
+};

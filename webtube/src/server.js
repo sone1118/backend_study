@@ -18,6 +18,9 @@ const logger = morgan("dev");
 app.set("view engine", "pug")
 app.set("views", process.cwd() + "/src/views");
 app.use(logger);
+
+//express는 url에 있는 것은 바로 확인 할 수가 있는데 ex) /:id(//d+)/watch -> req.param
+//form을 post 보내면 알수가 없으니 이것을 알아도록 설정해줘야한다.
 //미들웨어녀석 form에서 전송되는 것을 받아준다
 //여러 모드가 있는데 extended: true 이것은 object 형태로 줌
 app.use(express.urlencoded({ extended: true}));

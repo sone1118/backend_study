@@ -1,0 +1,12 @@
+extends base
+include mixins/video
+
+block content
+    form
+        input(type="text" name="keyword" placeholder="keyword")
+        input(type="submit" value="Search now")
+        
+        each video in videos 
+            +video(video)
+        else 
+            li Nothing was found
