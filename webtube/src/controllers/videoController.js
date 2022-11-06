@@ -1,4 +1,4 @@
-import Video from "../models/Video";
+import Video, { formatHashtags } from "../models/Video";
 
 //파일을 읽어 온 다음에 render을 실행해야 한다 => callback 사용 async await 사용
 
@@ -55,7 +55,7 @@ export const postEdit = async (req, res) => {
         return res.render("404", {pageTitle: "Video is not exist"});   
     }
     await Video.findByIdAndUpdate(id, {
-        title, description, hashtags: hashtags.split(",").map((word) => word.startsWith("#") ? word : `#${word}`)
+        title, description, hashtags: formatHashtags(hashtags)
     });
     return res.redirect(`/videos/${id}`);
 }
@@ -66,34 +66,11 @@ export const getUpload = (req, res) => {
 
 export const postUpload = async (req, res) => {
     const { title, description, hashtags } = req.body;
-
-    //video.save()로 실행하는 방법
-    // const video = new Video({    
-    //     title,
-    //     description,
-    //     createAt: Date.now(),
-    //     hashtags: hashtags.split(",").map((word) => `#${word}`),
-    //     meta: {
-    //         views: 0,
-    //         rating: 0,
-    //     }
-    // }); 
-    // try {
-    //     await video.save();
-    //     return res.redirect("/");
-    // }catch(error) {
-    //     return res.render("upload", {
-    //         pageTitle: "Upload Video", 
-    //         errorMessage: error._message});
-    // }
-
-// try catch 로 error 처리
-//error 종류 => type에 맞지 않은 데이터, 값이 없음
     try{
         await Video.create({
             title,
             description,
-            hashtags: hashtags.split(",").map((word) => word.startsWith("#") ? word : `#${word}`)
+            hashtags
         });        
         return res.redirect("/");
     } catch(error) {
