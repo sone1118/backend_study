@@ -7,8 +7,8 @@ const videoRouter = express.Router();
 //그래서 /upload를 먼저 써줘야 하는데 그렇게 하면 불편하니까
 // videoRouter.get("/:id(\\d+)", see);
 // 정규 표현식이 들어와서 걸러줄 수도 있다.
-videoRouter.get("/:id(\\d+)", watch);
-videoRouter.route("/:id(\\d+)/edit").get(getEdit).post(postEdit);
+videoRouter.get("/:id([0-9a-z]{24})", watch);
+videoRouter.route("/:id([0-9a-f]{24})/edit").get(getEdit).post(postEdit);
 videoRouter.route("/upload").get(getUpload).post(postUpload);
 
 export default videoRouter;

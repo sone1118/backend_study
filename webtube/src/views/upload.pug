@@ -1,7 +1,27 @@
 extends base
 
 block content
-    h1 hello from upload page
+    h1 Upload Video
+    if(errorMessage)
+        h2=errorMessage
     form(method="POST")
-        input(name="title" placeholder="Title name"  type="text" required)
+        input(
+            name="title" 
+            placeholder="Title"  
+            type="text" 
+            maxlength="40"
+            required 
+            )
+        input(
+            name="description"
+            placeholder="Description"
+            type="text" 
+            maxlength="140"
+            required)
+        input(
+            name="hashtags" 
+            placeholder="Hashtags, separated by comma." 
+            type="text" 
+            maxlength="50"
+            required)
         input(type="submit" value="Upload Video")

@@ -6,11 +6,12 @@ html(lang="ko")
     body
         header 
             h1=pageTitle
-            if(pageTitle !== "Upload Video")
-                nav 
-                    ul 
-                        li 
-                            a(href="/videos/upload") upload Video
+            nav 
+                ul 
+                    li 
+                        a(href="/videos/upload") upload Video
+                    li 
+                        a(href="/") Home
         main
             block content
         include partials/footer

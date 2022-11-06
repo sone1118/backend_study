@@ -1,31 +1,5 @@
 import Video from "../models/Video";
 
-// const videos = [
-//     {
-//         title: "Watch First Video",
-//         rating: 5,
-//         comments: 2,
-//         createAt: "1 minutes ago",
-//         views: 1,
-//         id: 1
-//     },
-//     {
-//         title: "Watch Seconde Video",
-//         rating: 5,
-//         comments: 2,
-//         createAt: "2 minutes ago",
-//         views: 200,
-//         id: 2
-//     },
-//     {
-//         title: "Watch Third Video",
-//         rating: 5,
-//         comments: 2,
-//         createAt: "3 minutes ago",
-//         views: 200,
-//         id: 3
-//     },
-// ];
 //파일을 읽어 온 다음에 render을 실행해야 한다 => callback 사용 async await 사용
 
 //callback 사용시
@@ -45,32 +19,44 @@ import Video from "../models/Video";
 //await 함수 -> 함수가 될때까지 다음 줄은 실행 하지 않는다
 //순차적으로 보기 좋음
 export const home = async (req, res) => {
-    console.log("1");
     try{
-        console.log("2");
         const videos = await Video.find({});
-        console.log("3");
         return res.render("home", { pageTitle: "home", videos });
     }catch(error) {
-        console.log(error);
         return res.render("server-error");
     }
+    //res.render에 return을 안해줘도 render는 된다
+    //return 은 함수의 끝을 내주는 것이기때문에 해주면 좋다.
 };
 
-export const watch = (req, res) => {
+//error를 먼저 처리하자
+export const watch = async (req, res) => {
     const { id } = req.params;
-    const video = videos[id - 1];
-    res.render("watch", {pageTitle: `Watch: ${video.title}`, video});
+    const video = await Video.findById(id);
+    if(!video) {
+        return res.render("404", {pageTitle: "Video is not exist"});
+    }
+    return res.render("watch", {pageTitle: video.title, video});
 }
-export const getEdit = (req, res) => {
+export const getEdit = async (req, res) => {
     const { id } = req.params;
-    const video = videos[id - 1];
+    const video = await Video.findById(id);
+    if(!video) {
+        return res.render("404", {pageTitle: "Video is not exist"});        
+    }
     return res.render("edit", {pageTitle: `Edit: ${video.title}`, video});
 }
-export const postEdit = (req, res) => {
+export const postEdit = async (req, res) => {
     const { id } = req.params;
-    const { title } = req.body;
-    videos[id - 1]. title = title;
+    const { title, description, hashtags } = req.body;
+    const video = await Video.exists({_id: id});
+
+    if(!video) {
+        return res.render("404", {pageTitle: "Video is not exist"});   
+    }
+    await Video.findByIdAndUpdate(id, {
+        title, description, hashtags: hashtags.split(",").map((word) => word.startsWith("#") ? word : `#${word}`)
+    });
     return res.redirect(`/videos/${id}`);
 }
 
@@ -78,16 +64,41 @@ export const getUpload = (req, res) => {
     return res.render("upload", {pageTitle: "Upload Video"});
 }
 
-export const postUpload = (req, res) => {
-    const { title }  = req.body;
-    const newVideo = {
-        title, 
-        rating: 0,
-        comments: 0,
-        createAt: "0 minutes ago",
-        views: 0,
-        id: videos.length + 1
-    };
-    videos.push(newVideo);
-    return res.redirect("/");
+export const postUpload = async (req, res) => {
+    const { title, description, hashtags } = req.body;
+
+    //video.save()로 실행하는 방법
+    // const video = new Video({    
+    //     title,
+    //     description,
+    //     createAt: Date.now(),
+    //     hashtags: hashtags.split(",").map((word) => `#${word}`),
+    //     meta: {
+    //         views: 0,
+    //         rating: 0,
+    //     }
+    // }); 
+    // try {
+    //     await video.save();
+    //     return res.redirect("/");
+    // }catch(error) {
+    //     return res.render("upload", {
+    //         pageTitle: "Upload Video", 
+    //         errorMessage: error._message});
+    // }
+
+// try catch 로 error 처리
+//error 종류 => type에 맞지 않은 데이터, 값이 없음
+    try{
+        await Video.create({
+            title,
+            description,
+            hashtags: hashtags.split(",").map((word) => word.startsWith("#") ? word : `#${word}`)
+        });        
+        return res.redirect("/");
+    } catch(error) {
+        return res.render("upload", {
+            pageTitle: "Upload Video", 
+            errorMessage: error._message});
+    }
 }

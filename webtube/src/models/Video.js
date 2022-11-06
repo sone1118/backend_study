@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 
 // title: String == title: {type: String}
 const videoSchema = {
-    title: String,
-    description: String,
-    createAt: Date,
-    hashtags: [{type: String}],
+    title: {type: String, trim: true, required: true, maxlength: 40},
+    description: {type: String, trim: true, required: true, maxlength: 140},
+    createAt: {type: Date, default: Date.now, required: true},
+    hashtags: [{type: String, trim: true}],
     meta: {
-        views: Number,
-        rating: Number,
+        views: {type: Number, default: 0, required: true},
+        rating: {type: Number, default: 0, required: true},
     }
 };
 
