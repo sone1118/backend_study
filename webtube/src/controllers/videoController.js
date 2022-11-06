@@ -1,4 +1,4 @@
-import Video, { formatHashtags } from "../models/Video";
+import Video from "../models/Video";
 
 //파일을 읽어 온 다음에 render을 실행해야 한다 => callback 사용 async await 사용
 
@@ -55,7 +55,7 @@ export const postEdit = async (req, res) => {
         return res.render("404", {pageTitle: "Video is not exist"});   
     }
     await Video.findByIdAndUpdate(id, {
-        title, description, hashtags: formatHashtags(hashtags)
+        title, description, hashtags: Video.formatHashtags(hashtags)
     });
     return res.redirect(`/videos/${id}`);
 }
@@ -70,7 +70,7 @@ export const postUpload = async (req, res) => {
         await Video.create({
             title,
             description,
-            hashtags
+            hashtags: Video.formatHashtags(hashtags)
         });        
         return res.redirect("/");
     } catch(error) {
