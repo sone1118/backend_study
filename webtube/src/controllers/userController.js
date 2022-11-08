@@ -1,4 +1,4 @@
-import User from "../models/user";
+import User from "../models/Username";
 import bcrypt from "bcrypt";
 
 export const edit = (req, res) => res.send("User Edit!");

@@ -1,6 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
@@ -32,12 +33,18 @@ app.use(express.urlencoded({ extended: true}));
 //클라이언트는 받은 세션 id를 매번 request 할때마다 같이 보낸다
 //서버는 그id를 보고 req.session에 클라이언트 정보를 불러오고 우리는 그것을 middleware로 처리를 해줄 수 있다
 //res.locals라는 부분은 pug도 전체로 접근할 수 있는 부분임
+//session에도 설정을 할 수 있는데 => ex) 모든 사람을 다 저장하지말고 loggin한 user만 저장하자
+//== resave: false, saveUninitialized: false,
+//기존에 있던 session값의 변경이 없어도 저장한다 => resave: true, 
+//새로생성된 session값의 변겨이 없어도 저장된다 => saveUninitialized: true,
 app.use(
     session({
-        secret: "Hello",
-        resave: true,
-        saveUninitialized: true,
-}));
+        secret: process.env.COOKIE_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        store: MongoStore.create({ mongoUrl: process.env.DB_URL }),
+    })
+);
 
 app.use(localMiddleward)
 app.use("/", rootRouter);

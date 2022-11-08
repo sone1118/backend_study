@@ -1,6 +1,8 @@
-import "./db"
-import "./models/Video" //이게 db임포트 후에 나와야함!
-import app from "./server"
+import "dotenv/config"
+import "./db";
+import "./models/Video"; //이게 db임포트 후에 나와야함!
+import "./models/Username";
+import app from "./server";
 
 const PORT = 4000;
 
