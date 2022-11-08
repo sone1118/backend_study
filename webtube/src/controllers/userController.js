@@ -76,7 +76,6 @@ export const startGithubLogin = (req, res) => {
   };
   const params = new URLSearchParams(config).toString();
   const finalUrl = `${baseUrl}?${params}`;
-  console.log(finalUrl);
   return res.redirect(finalUrl);
 };
 
@@ -95,8 +94,10 @@ export const finishGithubLogin = async (req, res) => {
       Accept: "application/json",
     },
   });
+  //설명수정
   const json = await data.json();
   res.send(JSON.stringify(json));
+  //설명수정
 };
 
 export const deleteUser = (req, res) => res.send("Delete User");
