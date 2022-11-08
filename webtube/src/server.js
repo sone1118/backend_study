@@ -1,8 +1,10 @@
 import express from "express";
 import morgan from "morgan";
+import session from "express-session";
 import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
+import { localMiddleward } from "./middlewares";
 
 const app = express();
 
@@ -24,6 +26,20 @@ app.use(logger);
 //미들웨어녀석 form에서 전송되는 것을 받아준다
 //여러 모드가 있는데 extended: true 이것은 object 형태로 줌
 app.use(express.urlencoded({ extended: true}));
+
+//쿠키와 세션을 이용하기 위해서 사용하는 미들웨어!
+//서버는 클라이언트의 요청이 있으면 그 세션 아이디라는 것을 같이 전달해준다
+//클라이언트는 받은 세션 id를 매번 request 할때마다 같이 보낸다
+//서버는 그id를 보고 req.session에 클라이언트 정보를 불러오고 우리는 그것을 middleware로 처리를 해줄 수 있다
+//res.locals라는 부분은 pug도 전체로 접근할 수 있는 부분임
+app.use(
+    session({
+        secret: "Hello",
+        resave: true,
+        saveUninitialized: true,
+}));
+
+app.use(localMiddleward)
 app.use("/", rootRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);

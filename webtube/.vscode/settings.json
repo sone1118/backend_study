@@ -1,0 +1,11 @@
+{
+  "liveSassCompile.settings.includeItems": [],
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.formatOnSave": true,
+  "vetur.format.defaultFormatter.pug": "none",
+  "editor.defaultFormatter": null,
+  "prettier.trailingComma": "all",
+  "prettier.vueIndentScriptAndStyle": false
+}
