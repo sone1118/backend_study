@@ -1,5 +1,6 @@
 import User from "../models/Username";
 import bcrypt from "bcrypt";
+import fetch from "node-fetch";
 
 export const edit = (req, res) => res.send("User Edit!");
 export const getJoin = (req, res) => {
@@ -64,6 +65,43 @@ export const postLogin = async (req, res) => {
   console.log("Log user in!!!");
   return res.redirect("/");
 };
+
+//https://github.com/login/oauth/authorize?client_id=1cfcf357c56667ec1f5f
+export const startGithubLogin = (req, res) => {
+  const baseUrl = "https://github.com/login/oauth/authorize";
+  const config = {
+    client_id: process.env.GH_CLIENT,
+    allow_signup: false,
+    scope: "read:user user:email"
+  };
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+  console.log(finalUrl);
+  return res.redirect(finalUrl);
+};
+
+export const finishGithubLogin = async (req, res) => {
+  const baseUrl = "https://github.com/login/oauth/access_token";
+  const config = {
+    client_id: process.env.GH_CLIENT,
+    client_secret: process.env.GH_SECRET,
+    code: req.query.code,
+  };
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+  const data = await fetch(finalUrl, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+    },
+  });
+  const json = await data.json();
+  res.send(JSON.stringify(json));
+};
+
 export const deleteUser = (req, res) => res.send("Delete User");
 export const see = (req, res) => res.send("See Profile");
 export const logout = (req, res) => res.send("Logout");
+
+
+
