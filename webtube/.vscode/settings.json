@@ -5,7 +5,7 @@
   },
   "editor.formatOnSave": true,
   "vetur.format.defaultFormatter.pug": "none",
-  "editor.defaultFormatter": null,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "prettier.trailingComma": "all",
   "prettier.vueIndentScriptAndStyle": false
 }
