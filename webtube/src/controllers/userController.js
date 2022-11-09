@@ -2,7 +2,29 @@ import User from "../models/Username";
 import bcrypt from "bcrypt";
 import fetch from "node-fetch";
 
-export const edit = (req, res) => res.send("User Edit!");
+export const getEdit = (req, res) => {
+    return res.render("edit-profile", { pageTitle: "Edit Profile" });
+};
+export const postEdit = async (req, res) => {
+    const {
+        session: {
+            user: { _id },
+        },
+        body: { name, email, username, location },
+    } = req;
+    const updatedUser = await User.findByIdAndUpdate(
+        _id,
+        {
+            email,
+            username,
+            name,
+            location,
+        },
+        { new: true },
+    );
+    req.session.user = updatedUser;
+    return res.redirect("/users/edit");
+};
 export const getJoin = (req, res) => {
     return res.render("join", { pageTitle: "Join" });
 };
