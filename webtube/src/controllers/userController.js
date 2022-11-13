@@ -11,12 +11,12 @@ export const postEdit = async (req, res) => {
         body: { name, email, nickname, location },
     } = req;
 
-    //username을 변경했을때
+    //nickname을 변경했을때
     if (user.nickname !== nickname) {
-        //username이 이미 있는지 확인한다
+        //nickname이 이미 있는지 확인한다
         const exists = await User.exists(nickname);
         if (exists) {
-            //이미 있는 username이라 변경 불가능
+            //이미 있는 nickname이라 변경 불가능
         } else {
             //변경가능
         }
@@ -148,7 +148,7 @@ export const finishGithubLogin = async (req, res) => {
             })
         ).json();
 
-        console.log(userData);
+        //console.log(userData);
         const emailData = await (
             await fetch(`${apiUrl}/user/emails`, {
                 headers: {
@@ -158,6 +158,7 @@ export const finishGithubLogin = async (req, res) => {
         ).json();
 
         const emailObj = emailData.find((email) => email.primary && email.verified);
+        console.log(emailObj);
 
         if (!emailObj) {
             //확인된 이메일이 없음
@@ -176,7 +177,6 @@ export const finishGithubLogin = async (req, res) => {
                 name: userData.name,
                 avatarUrl: userData.avatar_url,
                 email: emailObj.email,
-                nickname: userData.login,
                 socialOnly: true,
                 password: "",
                 location: userData.location,
