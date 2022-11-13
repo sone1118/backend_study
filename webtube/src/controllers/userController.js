@@ -7,16 +7,30 @@ export const getEdit = (req, res) => {
 };
 export const postEdit = async (req, res) => {
     const {
-        session: {
-            user: { _id },
-        },
-        body: { name, email, username, location },
+        session: { user },
+        body: { name, email, nickname, location },
     } = req;
+
+    //username을 변경했을때
+    if (user.nickname !== nickname) {
+        //username이 이미 있는지 확인한다
+        const exists = await User.exists(nickname);
+        if (exists) {
+            //이미 있는 username이라 변경 불가능
+        } else {
+            //변경가능
+        }
+    }
+
+    //email을 변경했을때
+    if (user.email !== email) {
+        //email이 이미 있는지 확인한다.
+    }
     const updatedUser = await User.findByIdAndUpdate(
-        _id,
+        user._id,
         {
             email,
-            username,
+            nickname,
             name,
             location,
         },
@@ -29,7 +43,7 @@ export const getJoin = (req, res) => {
     return res.render("join", { pageTitle: "Join" });
 };
 export const postJoin = async (req, res) => {
-    const { name, username, email, password, password2, location } = req.body;
+    const { name, nickname, email, password, password2, location } = req.body;
     if (password !== password2) {
         return res.status(400).render("join", {
             pageTitle: "Join",
@@ -38,12 +52,12 @@ export const postJoin = async (req, res) => {
     }
 
     const exists = await User.exists({
-        $or: [{ username }, { email }],
+        $or: [{ nickname }, { email }],
     });
     if (exists) {
         return res.status(400).render("join", {
             pageTitle: "Join",
-            errorMessage: "This username/email is already taken.",
+            errorMessage: "This nickname/email is already taken.",
         });
     }
 
@@ -51,7 +65,7 @@ export const postJoin = async (req, res) => {
         await User.create({
             name,
             email,
-            username,
+            nickname,
             password,
             location,
         });
@@ -66,14 +80,14 @@ export const postJoin = async (req, res) => {
 export const getLogin = (req, res) => res.render("login", { pageTitle: "Login" });
 
 export const postLogin = async (req, res) => {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username, socialOnly: false });
+    const { email, password } = req.body;
+    const user = await User.findOne({ email, socialOnly: false });
     const pageTitle = "Login";
 
     if (!user) {
         return res.status(400).render("login", {
             pageTitle,
-            errorMessage: "An account with this username does not exists",
+            errorMessage: "An account with this email does not exists",
         });
     }
     const correct = await bcrypt.compare(password, user.password);
@@ -147,7 +161,10 @@ export const finishGithubLogin = async (req, res) => {
 
         if (!emailObj) {
             //확인된 이메일이 없음
-            return res.status(400).redirect("/login");
+            return res.status(400).render("login", {
+                pageTitle,
+                errorMessage: "Github에 확인된 이메일이 없습니다! 회원가입을 진행하세요!",
+            });
         }
 
         let user = await User.findOne({
@@ -159,7 +176,7 @@ export const finishGithubLogin = async (req, res) => {
                 name: userData.name,
                 avatarUrl: userData.avatar_url,
                 email: emailObj.email,
-                username: userData.login,
+                nickname: userData.login,
                 socialOnly: true,
                 password: "",
                 location: userData.location,

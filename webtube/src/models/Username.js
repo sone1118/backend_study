@@ -1,10 +1,11 @@
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 
+//username 없애 id=> email로  email=> 인증받기
 const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     avatarUrl: String,
-    username: { type: String, required: true, unique: true },
+    nickname: { type: String },
     socialOnly: { type: Boolean, default: false },
     password: { type: String },
     name: { type: String, required: true },
